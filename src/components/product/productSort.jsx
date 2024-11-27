@@ -1,4 +1,19 @@
+import { useContext, useState } from "react";
+import { ProductContext } from "../../context";
+
 const ProductSort = () => {
+  const [toggleShow, setToggleShow] = useState(false);
+  const { products, setProducts } = useContext(ProductContext);
+
+  function handelAssendingSort() {
+    const toAssSort = [...products].sort((a, b) => a.price - b.price);
+    setProducts(toAssSort);
+  }
+
+  function handelDesendingSort() {
+    const toDessSort = [...products].sort((a, b) => b.price - a.price);
+    setProducts(toDessSort);
+  }
   return (
     <>
       <div className="relative inline-block text-left">
@@ -9,6 +24,7 @@ const ProductSort = () => {
             id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"
+            onClick={() => setToggleShow(!toggleShow)}
           >
             Sort
             <svg
@@ -33,25 +49,29 @@ const ProductSort = () => {
           aria-labelledby="menu-button"
           tabIndex="-1"
         >
-          <div className="py-1" role="none">
-            <span
-              className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
-              role="menuitem"
-              tabIndex="-1"
-              id="menu-item-0"
-            >
-              Low to High
-            </span>
-            <span
-              href=""
-              className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
-              role="menuitem"
-              tabIndex="-1"
-              id="menu-item-0"
-            >
-              High to Low
-            </span>
-          </div>
+          {toggleShow && (
+            <div className="py-1" role="none">
+              <span
+                className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
+                role="menuitem"
+                tabIndex="-1"
+                id="menu-item-0"
+                onClick={handelAssendingSort}
+              >
+                Low to High
+              </span>
+              <span
+                href=""
+                className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
+                role="menuitem"
+                tabIndex="-1"
+                id="menu-item-0"
+                onClick={handelDesendingSort}
+              >
+                High to Low
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </>
