@@ -1,7 +1,24 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { FilterCategoryContext } from "../../context";
 
 const ProductFilter = () => {
   const [toggleShow, setToggleShow] = useState(false);
+  const [catagoryFilter, setCategoryFilter] = useState([]);
+  const { filterCat, setFilterCat } = useContext(FilterCategoryContext);
+  // FETCHING CATEGORY LIST
+  const fetchCategory = async () => {
+    const response = await fetch(
+      "https://fakestoreapi.com/products/categories"
+    );
+    const data = await response.json();
+    const categoryList = data;
+    setCategoryFilter(categoryList);
+  };
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+  console.log("hello", filterCat);
+  console.log(catagoryFilter);
   return (
     <>
       <div className="relative inline-block text-left">
@@ -39,30 +56,24 @@ const ProductFilter = () => {
             id="filter-dropdown"
           >
             <div className="py-1" role="none">
-              <label className="inline-flex w-full cursor-pointer hover:bg-gray-50 items-center px-4 py-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4"
-                  id="filter-option-1"
-                />
-                <span className="ml-2">Category 1</span>
-              </label>
-              <label className="inline-flex w-full cursor-pointer hover:bg-gray-50 items-center px-4 py-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4"
-                  id="filter-option-2"
-                />
-                <span className="ml-2">Category 2</span>
-              </label>
-              <label className="inline-flex w-full cursor-pointer hover:bg-gray-50 items-center px-4 py-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4"
-                  id="filter-option-3"
-                />
-                <span className="ml-2">Category 3</span>
-              </label>
+              {catagoryFilter.length > 0 ? (
+                catagoryFilter.map((list) => (
+                  <label
+                    key={list}
+                    className="inline-flex w-full cursor-pointer hover:bg-gray-50 items-center px-4 py-2 text-sm text-gray-700"
+                  >
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-4 w-4"
+                      id="filter-option-1"
+                      onChange={() => setFilterCat(list)}
+                    />
+                    <span className="ml-2">{list}</span>
+                  </label>
+                ))
+              ) : (
+                <p className="ml-2">No Category Available</p>
+              )}
             </div>
           </div>
         )}
