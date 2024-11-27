@@ -4,7 +4,20 @@ import { FilterCategoryContext } from "../../context";
 const ProductFilter = () => {
   const [toggleShow, setToggleShow] = useState(false);
   const [catagoryFilter, setCategoryFilter] = useState([]);
-  const { filterCat, setFilterCat } = useContext(FilterCategoryContext);
+  const { setFilterCat } = useContext(FilterCategoryContext);
+  const [selectCat, setSelectCat] = useState("");
+
+  // Handel Category Change
+  const handelOnChange = (category) => {
+    if (selectCat === category) {
+      setFilterCat("");
+      setSelectCat("");
+    } else {
+      setFilterCat(category);
+      setSelectCat(category);
+    }
+  };
+  console.log("selected", selectCat);
   // FETCHING CATEGORY LIST
   const fetchCategory = async () => {
     const response = await fetch(
@@ -17,8 +30,9 @@ const ProductFilter = () => {
   useEffect(() => {
     fetchCategory();
   }, []);
-  console.log("hello", filterCat);
-  console.log(catagoryFilter);
+
+  // console.log("hello", filterCat);
+  // console.log(catagoryFilter);
   return (
     <>
       <div className="relative inline-block text-left">
@@ -57,18 +71,19 @@ const ProductFilter = () => {
           >
             <div className="py-1" role="none">
               {catagoryFilter.length > 0 ? (
-                catagoryFilter.map((list) => (
+                catagoryFilter.map((category, index) => (
                   <label
-                    key={list}
+                    key={index}
                     className="inline-flex w-full cursor-pointer hover:bg-gray-50 items-center px-4 py-2 text-sm text-gray-700"
                   >
                     <input
                       type="checkbox"
                       className="form-checkbox h-4 w-4"
                       id="filter-option-1"
-                      onChange={() => setFilterCat(list)}
+                      checked={selectCat === category}
+                      onChange={() => handelOnChange(category)}
                     />
-                    <span className="ml-2">{list}</span>
+                    <span className="ml-2">{category}</span>
                   </label>
                 ))
               ) : (

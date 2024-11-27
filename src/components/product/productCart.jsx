@@ -1,12 +1,24 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AddToCartContext } from "../../context";
+import { ProductCartModal } from "./cartModal";
 
 const ProductCart = () => {
   const { cart } = useContext(AddToCartContext);
+  const [showModal, setShowModal] = useState(false);
+
+  const handelOnClick = (e) => {
+    e.preventDefault();
+    setShowModal(!showModal);
+  };
+
   return (
     <>
-      <div className="flow-root">
-        <a href="#" className="group -m-2 flex items-center p-2">
+      <div className="flow-root relative">
+        <a
+          onClick={handelOnClick}
+          href="#"
+          className="group -m-2 flex items-center p-2"
+        >
           <svg
             className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
             fill="none"
@@ -27,6 +39,8 @@ const ProductCart = () => {
           <span className="sr-only">items in cart, view bag</span>
         </a>
       </div>
+
+      {showModal && <ProductCartModal />}
     </>
   );
 };

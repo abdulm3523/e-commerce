@@ -1,4 +1,36 @@
+import { useContext, useEffect, useState } from "react";
+import { useDebounce } from "../../hooks/useDebounce";
+import { ProductContext } from "../../context";
 const ProductSearch = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { products, setProducts } = useContext(ProductContext);
+  const [originalProducts, setOriginalProducts] = useState([]);
+
+  // storing original products to and local variable
+  useEffect(() => {
+    if (originalProducts.length === 0 && products.length > 0) {
+      setOriginalProducts(products);
+    }
+  }, [products, originalProducts]);
+
+  const doSearchProduct = useDebounce((term) => {
+    if (term === "") {
+      setProducts(originalProducts);
+    } else {
+      const filterProducts = originalProducts.filter((product) =>
+        product.title.toLowerCase().includes(term.toLowerCase())
+      );
+      setProducts(filterProducts);
+    }
+  }, 250);
+
+  // Handel ON search field
+  const handelOnChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    doSearchProduct(searchTerm);
+  };
+
   return (
     <>
       <div className="flex flex-1 items-center px-3.5 py-2 text-gray-400 group hover:ring-1 hover:ring-gray-300 focus-within:!ring-2 ring-inset focus-within:!ring-teal-500 rounded-md">
@@ -21,6 +53,7 @@ const ProductSearch = () => {
           id="headlessui-combobox-input-:r5n:"
           role="combobox"
           type="text"
+          onChange={handelOnChange}
           aria-expanded="false"
           aria-autocomplete="list"
           style={{ caretColor: "rgb(107, 114, 128)" }}
